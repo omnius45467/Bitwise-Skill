@@ -23,4 +23,4 @@ Each Alexa skill requires a Lambda function.
 3. Choose to Nodejs Alexa blueprint
 4. Give your function a name and description.
 5. Set the role and create your function.
-6. Using the `gulp` command upload the zip file from the newly created `dist` directory.
+6. Using the `grunt` command upload the zip file from the newly created `dist` directory.
