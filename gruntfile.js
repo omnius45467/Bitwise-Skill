@@ -30,4 +30,4 @@ grunt.initConfig({
     }
 });
 
-grunt.registerTask('deploy', ['lambda_package', 'lambda_deploy'])
+grunt.registerTask('deploy', ['lambda_package', 'lambda_deploy']);
