@@ -8,7 +8,7 @@ To get started simple use `npm install` to install all dependencies.
 
 ## Deploying to Amazon Lambda
 
-To deploy your skill you will need to use the `gulp` command to zip up the file and drop into Lambda.
+To deploy your skill you will need to use the `grunt deploy` command to zip up the file and drop into Lambda.
 
 ## The Sample Project
 
@@ -23,4 +23,4 @@ Each Alexa skill requires a Lambda function.
 3. Choose to Nodejs Alexa blueprint
 4. Give your function a name and description.
 5. Set the role and create your function.
-6. Using the `grunt` command upload the zip file from the newly created `dist` directory.
+6. Using the `grunt lambda_package` command upload the zip file from the newly created `dist` directory.
