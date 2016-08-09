@@ -1,12 +1,16 @@
+/**
+ * Created by jeremyrobles on 8/9/16.
+ */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
     env = require('node-env-file'),
     Promise = require('bluebird');
+Schema = mongoose.Schema;
 
-env('./.env',{verbose: true, overwrite: true, raise: false, logger: console});
+env('./.env', {verbose: true, overwrite: true, raise: false, logger: console});
+mongoose.Promise = Promise;
 mongoose.connect(process.env.MLAB);
 
-var CompanySchema = new Schema({
+var Company = new Schema({
     name: {
         type: String,
         required: true
@@ -17,30 +21,32 @@ var CompanySchema = new Schema({
     },
     phone: {
         type: Number,
-        required:true
+        required: true
     },
     suite: {
-        type:Number,
-        required:true
+        type: Number,
+        required: true
     },
     floor: {
-        type:Number,
-        required:true
+        type: Number,
+        required: true
     }
 });
 
-mongoose.Promise = Promise;
+var CompanyModel = mongoose.model('companies', Company);
 
-
-var CompanyModel = mongoose.model('companies', CompanySchema);
-var company = 'Bitwise';
-
-var test = CompanyModel.findOne({name: company})
-    .then(function(comp) {
-        return comp.name;
-    })
-    .catch(function (err) {
-        console.log(err);
-
+function getCompany(company) {
+    // CompanyModel.findOne().select('name').exec( function (err, comp) {
+    //     comp.isSelected('name');
+    // });
+    CompanyModel.findOne({ name: company}, function (err, doc){
+        // doc is a Document
+        // console.log(err);
+        console.log(doc);
     });
-console.log(test);
+}
+
+var c = 'Bitwise';
+var data = getCompany(c);
+console.log(data);
+// mongoose.connection.close();

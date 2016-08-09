@@ -1,16 +1,36 @@
 var alexa = require('alexa-app'),
     app = new alexa.app(),
     mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId,
-    env = require('node-env-file'),
+    env = require('node-env-file');
+    Schema = mongoose.Schema;
+    ObjectId = Schema.ObjectId;
+
     Promise = require('bluebird');
 
 env('./.env',{verbose: true, overwrite: true, raise: false, logger: console});
 
 mongoose.connect(process.env.MLAB);
 
-console.log(process.env.MLAB);
+
+mongoose.Promise = Promise;
+
+
+
+
+/**
+ * LaunchRequest.
+ */
+app.launch(function (request, response) {
+    var greetingArray = [
+        "Hi there! Welcome to Bitwise!",
+        "Welcome to Bitwise",
+        "Hi, welcome to Bitwise. Is there something I can help you find?"
+    ];
+    var random = Math.floor(Math.random()*greetingArray.length);
+    response.say(greetingArray[random]);
+    response.shouldEndSession(false);
+    // response.send();
+});
 
 var Company = new Schema({
     name: {
@@ -35,27 +55,7 @@ var Company = new Schema({
     }
 });
 
-mongoose.Promise = Promise;
-
 var CompanyModel = mongoose.model('companies', Company);
-
-
-/**
- * LaunchRequest.
- */
-app.launch(function (request, response) {
-
-    var greetingArray = [
-        "Hi there!",
-        "Welcome to Bitwise",
-        "Is there something I can help you find?"
-    ];
-    
-    response.say(greetingArray[Math.floor(Math.random() * greetingArray.length - 1)]);
-    response.card("Welcome to Bitwise Industries!");
-    response.shouldEndSession(false);
-});
-
 
 /**
  * IntentRequest.
@@ -66,19 +66,27 @@ app.intent('CompanyIntent',
         'utterances': ['find the company {company}']
     },
     function (request, response) {
-        var company = request.slot('company');
-        var dialogArray = [
-            'you asked for the company ',
-            'here is what I found for the company ',
-            'is this what you are looking for '
-        ];
-        CompanyModel.findOne({name: company}, function (err, comp) {
-            if(!err){
-                response.say(comp.name);
-                response.shouldEndSession(true);
-                response.send();
-            }
-        });
+        
+        function getCompany(c){
+            CompanyModel.findOne({ name: c}, function (err, doc){
+                // doc is a Document
+                // console.log(err);
+                if(!err){
+                    response.say(doc.name + ' ' + doc.contact);
+                    response.shouldEndSession(true);
+                    response.send();
+                }else{
+                    return 'err';
+                }
+
+            });
+        }
+        setTimeout(function() {
+            var company = request.slot('company');
+            getCompany(company);
+         
+        }, 250);
+        return false;
     }
 );
 
