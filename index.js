@@ -75,6 +75,8 @@ app.intent('CompanyIntent',
                     response.say(doc.name + ' ' + doc.contact);
                     response.shouldEndSession(true);
                     response.send();
+                    mongoose.connection.close();
+                    
                 }else{
                     return 'err';
                 }
@@ -86,7 +88,7 @@ app.intent('CompanyIntent',
             getCompany(company);
          
         }, 250);
-        mongoose.connection.close();
+        
         return false;
     }
 );
