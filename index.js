@@ -86,6 +86,7 @@ app.intent('CompanyIntent',
             getCompany(company);
          
         }, 250);
+        mongoose.connection.close();
         return false;
     }
 );
