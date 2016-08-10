@@ -71,7 +71,7 @@ app.intent('CompanyIntent',
             CompanyModel.findOne({ utteranceName: c}, function (err, doc){
                 console.log(doc);
                 if(!err && doc != null){
-                    response.say(doc.name + ' ' + doc.contact);
+                    response.say('I found '+doc.name + ' which is located at suite number ' + doc.suite+' on floor '+doc.floor);
                     response.shouldEndSession(true);
                     response.send();
                     mongoose.connection.close();
@@ -85,6 +85,40 @@ app.intent('CompanyIntent',
         }
         setTimeout(function() {
             var company = request.slot('company');
+            console.log(company);
+            getCompany(company);
+
+        }, 100);
+
+        return false;
+    }
+);
+app.intent('ContactIntent',
+    {
+        'slots': {'company': 'LIST_OF_COMPANIES'},
+        'utterances': ['who can I talk to from {company}', 'is there someone I can talk to from {company}', 'who can I see from {company}']
+    },
+    function (request, response) {
+
+        function getCompany(c){
+            CompanyModel.findOne({ utteranceName: c}, function (err, doc){
+                console.log(doc);
+                if(!err && doc != null){
+                    response.say('Talk to '+doc.contact+" should I contact them for you?");
+                    response.shouldEndSession(true);
+                    response.send();
+                    mongoose.connection.close();
+                }else{
+                    response.say('something bad happened');
+                    response.shouldEndSession(true);
+                    response.send();
+                    mongoose.connection.close();
+                }
+            });
+        }
+        setTimeout(function() {
+            var company = request.slot('company');
+            console.log(company);
             getCompany(company);
 
         }, 100);
