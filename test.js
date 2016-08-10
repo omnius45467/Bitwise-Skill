@@ -42,5 +42,5 @@ function getCompany(company) {
     });
 }
 
-var c = 'bit wise';
+var c = 'shift 3';
 getCompany(c);
