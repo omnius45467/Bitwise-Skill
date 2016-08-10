@@ -7,15 +7,12 @@ var alexa = require('alexa-app'),
 
     Promise = require('bluebird');
 
-env('./.env',{verbose: true, overwrite: true, raise: false, logger: console});
+env('./.env');
 
 mongoose.connect(process.env.MLAB);
 
 
 mongoose.Promise = Promise;
-
-
-
 
 /**
  * LaunchRequest.
@@ -57,6 +54,7 @@ var Company = new Schema({
 
 var CompanyModel = mongoose.model('companies', Company);
 
+
 /**
  * IntentRequest.
  */
@@ -66,32 +64,40 @@ app.intent('CompanyIntent',
         'utterances': ['find the company {company}']
     },
     function (request, response) {
-        
-        function getCompany(c){
-            CompanyModel.findOne({ name: c}, function (err, doc){
-                // doc is a Document
-                // console.log(err);
-                if(!err){
-                    response.say(doc.name + ' ' + doc.contact);
-                    response.shouldEndSession(true);
-                    response.send();
-                    mongoose.connection.close();
-                    
-                }else{
-                    return 'err';
-                }
-
-            });
-        }
         setTimeout(function() {
+            function getCompany(c){
+                CompanyModel.findOne({ name: c}, function (err, doc){
+                    console.log(doc);
+                    if(!err){
+                        response.say(doc.name + ' is on floor number ' + doc.floor + ", suite number "+ doc.suite);
+                        response.reprompt('Can I help you with something?');
+                        response.shouldEndSession(true);
+                        response.send();
+                        mongoose.connection.close();
+                    }else{
+                        response.say('I cant seem to find the company your looking for');
+                        response.reprompt('Can I help you with something?');
+                        response.shouldEndSession(true);
+                        response.send();
+                        mongoose.connection.close();
+                    }
+                });
+            }
             var company = request.slot('company');
             getCompany(company);
-         
+
         }, 250);
         
         return false;
     }
 );
+app.intent('EndIntent', {
+    'utterances': ['stop','thank you' ]
+}, function(request, response){
+    response.say('by your command');
+    response.shouldEndSession(true);
+    response.send();
+});
 
 /**
  * Error handler for any thrown errors.

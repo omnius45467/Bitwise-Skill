@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
     Promise = require('bluebird');
 Schema = mongoose.Schema;
 
-env('./.env', {verbose: true, overwrite: true, raise: false, logger: console});
+env('./.env');
 mongoose.Promise = Promise;
 mongoose.connect(process.env.MLAB);
 
@@ -36,17 +36,11 @@ var Company = new Schema({
 var CompanyModel = mongoose.model('companies', Company);
 
 function getCompany(company) {
-    // CompanyModel.findOne().select('name').exec( function (err, comp) {
-    //     comp.isSelected('name');
-    // });
     CompanyModel.findOne({ name: company}, function (err, doc){
-        // doc is a Document
-        // console.log(err);
         console.log(doc);
+        mongoose.connection.close();
     });
 }
 
-var c = 'Bitwise';
-var data = getCompany(c);
-console.log(data);
-// mongoose.connection.close();
+var c = 'bit wise';
+getCompany(c);
