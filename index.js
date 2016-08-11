@@ -1,20 +1,16 @@
 var alexa = require('alexa-app'),
     app = new alexa.app(),
     mongoose = require('mongoose'),
-    env = require('node-env-file');
-Schema = mongoose.Schema;
-ObjectId = Schema.ObjectId;
+    env = require('node-env-file'),
+    Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId,
+    Promise = require('bluebird');
 
-Promise = require('bluebird');
 
-env('./.env',{verbose: true, overwrite: true, raise: false, logger: console});
+env(__dirname + '/.env', {verbose: true, overwrite: true, raise: false, logger: console});
 
 mongoose.connect(process.env.MLAB);
-
-
 mongoose.Promise = Promise;
-
-
 
 
 /**
@@ -22,12 +18,18 @@ mongoose.Promise = Promise;
  */
 app.launch(function (request, response) {
     var greetingArray = [
-        "Hi there! Welcome to Bitwise!",
-        "Welcome to Bitwise",
+        "Hi there! Welcome to Bitwise! What can I do for you?",
+        "Welcome to Bitwise, how can I help?",
         "Hi, welcome to Bitwise. Is there something I can help you find?"
     ];
-    var random = Math.floor(Math.random()*greetingArray.length);
+    var repromptArray = [
+        "Hello? Is this thing on?",
+        "Can I help you with something?",
+        "Is any one there?"
+    ];
+    var random = Math.floor(Math.random() * greetingArray.length);
     response.say(greetingArray[random]);
+    response.reprompt(repromptArray[random]);
     response.shouldEndSession(false);
     // response.send();
 });
@@ -66,29 +68,17 @@ app.intent('CompanyIntent',
         'utterances': ['find the company {company}']
     },
     function (request, response) {
-
-        function getCompany(c){
-            CompanyModel.findOne({ utteranceName: c}, function (err, doc){
-                console.log(doc);
-                if(!err && doc != null){
-                    response.say('I found '+doc.name + ' which is located at suite number ' + doc.suite+' on floor '+doc.floor);
-                    response.shouldEndSession(true);
-                    response.send();
-                    mongoose.connection.close();
-                }else{
-                    response.say('something bad happened');
-                    response.shouldEndSession(true);
-                    response.send();
-                    mongoose.connection.close();
-                }
+        CompanyModel.findOne({utteranceName: request.slot('company')})
+            .then(function (company) {
+                response.say('I found ' + company.name + ' which is located at suite number ' + company.suite + ' on floor ' + company.floor);
+                response.shouldEndSession(true);
+                response.send();
+            })
+            .catch(function (err) {
+                response.say('something bad happened');
+                response.shouldEndSession(true);
+                response.send();
             });
-        }
-        setTimeout(function() {
-            var company = request.slot('company');
-            console.log(company);
-            getCompany(company);
-
-        }, 100);
 
         return false;
     }
@@ -99,34 +89,22 @@ app.intent('ContactIntent',
         'utterances': ['who can I talk to from {company}', 'is there someone I can talk to from {company}', 'who can I see from {company}']
     },
     function (request, response) {
-
-        function getCompany(c){
-            CompanyModel.findOne({ utteranceName: c}, function (err, doc){
-                console.log(doc);
-                if(!err && doc != null){
-                    response.say('Talk to '+doc.contact+" should I contact them for you?");
-                    response.shouldEndSession(true);
-                    response.send();
-                    mongoose.connection.close();
-                }else{
-                    response.say('something bad happened');
-                    response.shouldEndSession(true);
-                    response.send();
-                    mongoose.connection.close();
-                }
+        CompanyModel.findOne({utteranceName: request.slot('company')})
+            .then(function (company) {
+                response.say('Talk to '+company.contact+'. Should I contact them for you?');
+                response.shouldEndSession(true);
+                response.send();
+            })
+            .catch(function (err) {
+                response.say('something bad happened');
+                response.shouldEndSession(true);
+                response.send();
             });
-        }
-        setTimeout(function() {
-            var company = request.slot('company');
-            console.log(company);
-            getCompany(company);
-
-        }, 100);
 
         return false;
     }
 );
-app.intent('EndIntent',{'utterances': ['thank you', 'stop']}, function (request, response) {
+app.intent('EndIntent', {'utterances': ['thank you', 'stop']}, function (request, response) {
     response.say('by your command');
     response.shouldEndSession(true);
     response.send();
