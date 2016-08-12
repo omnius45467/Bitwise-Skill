@@ -33,13 +33,22 @@ var Company = new Schema({
     floor: {
         type: Number,
         required: true
+    // },
+    // story: {
+    //     type: String,
+    //     required:true
     }
 });
 
 var repromptArray = [
     "Hello? Is this thing on?",
     "Can I help you with something?",
-    "Is any one there?"
+    "Is any one there?",
+    "Did you say something? I didn't understand",
+    "Umm, what?",
+    "I didn't get that, can you try again?",
+    "Can you speak up? I didn't hear that",
+    "Interesting are my sound receptors working right? I can't hear a thing"
 ];
 
 var CompanyModel = mongoose.model('companies', Company);
@@ -63,7 +72,7 @@ app.intent('CompanyIntent',
         'utterances': ['find the company {company}']
     },
     function (request, response) {
-        CompanyModel.findOne({utteranceName: request.slot('company')})
+        CompanyModel.findOne({utterance: request.slot('company')})
             .then(function (company) {
                 var companyResponseArray = [
                     'I found ' + company.name + ' which is located at suite number ' + company.suite + ' on floor ' + company.floor,
@@ -135,7 +144,7 @@ app.intent('ContactIntent',
         'utterances': ['who can I talk to from {company}', 'is there someone I can talk to from {company}', 'who can I see from {company}']
     },
     function (request, response) {
-        CompanyModel.findOne({utteranceName: request.slot('company')})
+        CompanyModel.findOne({utterance: request.slot('company')})
             .then(function (company) {
                 var contactResponseArray = [
                     'Talk to '+company.contact+'. Should I contact them for you?',

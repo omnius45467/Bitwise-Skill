@@ -40,7 +40,7 @@ var Company = new Schema({
 var CompanyModel = mongoose.model('companies', Company);
 
 function getCompany(company) {
-    CompanyModel.findOne({ utteranceName: company}, function (err, doc){
+    CompanyModel.findOne({ utterance: company}, function (err, doc){
         console.log(doc);
         mongoose.connection.close();
     });
