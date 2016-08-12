@@ -53,7 +53,7 @@ app.launch(function (request, response) {
     ];
     var random = Math.floor(Math.random() * greetingArray.length);
     response.say(greetingArray[random]);
-    response.reprompt(repromptArray[random]);
+    response.reprompt(Math.floor(Math.random() * repromptArray.length));
     response.shouldEndSession(false);
 });
 
@@ -68,12 +68,12 @@ app.intent('CompanyIntent',
             .then(function (company) {
                 var companyResponseArray = [
                     'I found ' + company.name + ' which is located at suite number ' + company.suite + ' on floor ' + company.floor,
-                    'It looks like '+company.name+' is located on floor '+company.name+' suite number '+company.suite
+                    'It looks like '+company.name+' is located on floor '+company.floor+' suite number '+company.suite
 
                 ];
                 var random = Math.floor(Math.random() * companyResponseArray.length);
                 response.say(companyResponseArray[random]);
-                response.reprompt(repromptArray[random]);
+                response.reprompt(Math.floor(Math.random() * repromptArray.length));
                 response.shouldEndSession(false);
                 response.send();
             })
@@ -84,7 +84,7 @@ app.intent('CompanyIntent',
                     'I have encountered a problem accessing the database'
                 ];
                 response.say(Math.floor(Math.random() * errorArray.length));
-                response.reprompt(repromptArray[random]);
+                response.reprompt(Math.floor(Math.random() * repromptArray.length));
                 response.shouldEndSession(false);
                 response.send();
             });
@@ -103,11 +103,13 @@ app.intent('CompanyCountIntent',
                 var companyCountArray = [
                     'I found '+count+' companies in the building',
                     'there are '+count+' companies in the building',
-                    'there are '+count+' companies'
+                    'there are '+count+' companies',
+                    count+' companies total',
+                    count+' companies'
                 ];
                 var random = Math.floor(Math.random() * companyCountArray.length);
                 response.say(companyCountArray[random]);
-                response.reprompt(repromptArray[random]);
+                response.reprompt(Math.floor(Math.random() * repromptArray.length));
                 response.shouldEndSession(false);
                 response.send();
             })
@@ -118,7 +120,7 @@ app.intent('CompanyCountIntent',
                     'I have encountered a problem accessing the database'
                 ];
                 response.say(Math.floor(Math.random() * errorArray.length));
-                response.reprompt(repromptArray[random]);
+                response.reprompt(Math.floor(Math.random() * repromptArray.length));
                 response.shouldEndSession(false);
                 response.send();
             });
@@ -143,7 +145,7 @@ app.intent('ContactIntent',
                 ];
                 var random = Math.floor(Math.random() * contactResponseArray.length);
                 response.say(contactResponseArray[random]);
-                response.reprompt('Is there someone you are looking for?');
+                response.reprompt(Math.floor(Math.random() * repromptArray.length));
                 response.shouldEndSession(false);
                 response.send();
             })
@@ -154,7 +156,7 @@ app.intent('ContactIntent',
                     'I have encountered a problem accessing the database'
                 ];
                 response.say(Math.floor(Math.random() * errorArray.length));
-                response.reprompt(repromptArray[random]);
+                response.reprompt(Math.floor(Math.random() * repromptArray.length));
                 response.shouldEndSession(false);
                 response.send();
             });
