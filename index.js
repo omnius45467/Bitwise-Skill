@@ -13,9 +13,6 @@ env(__dirname + '/.env', {verbose: true, overwrite: true, raise: false, logger: 
 mongoose.connect(process.env.MLAB);
 mongoose.Promise = Promise;
 
-
-
-
 var Company = new Schema({
     name: {
         type: String,
@@ -39,8 +36,13 @@ var Company = new Schema({
     }
 });
 
-var CompanyModel = mongoose.model('companies', Company);
+var repromptArray = [
+    "Hello? Is this thing on?",
+    "Can I help you with something?",
+    "Is any one there?"
+];
 
+var CompanyModel = mongoose.model('companies', Company);
 
 // LaunchRequest
 app.launch(function (request, response) {
@@ -48,11 +50,6 @@ app.launch(function (request, response) {
         "Hi there! Welcome to Bitwise! What can I do for you?",
         "Welcome to Bitwise, how can I help?",
         "Hi, welcome to Bitwise. Is there something I can help you find?"
-    ];
-    var repromptArray = [
-        "Hello? Is this thing on?",
-        "Can I help you with something?",
-        "Is any one there?"
     ];
     var random = Math.floor(Math.random() * greetingArray.length);
     response.say(greetingArray[random]);
@@ -76,12 +73,52 @@ app.intent('CompanyIntent',
                 ];
                 var random = Math.floor(Math.random() * companyResponseArray.length);
                 response.say(companyResponseArray[random]);
-                // response.say('I found ' + company.name + ' which is located at suite number ' + company.suite + ' on floor ' + company.floor);
+                response.reprompt(repromptArray[random]);
                 response.shouldEndSession(false);
                 response.send();
             })
             .catch(function (err) {
-                response.say('something bad happened');
+                var errorArray = [
+                    'hmmm, for some reason I can not locate any companies in the database',
+                    'there might be an issue with the database, please try again in a bit when I have the  error rectified',
+                    'I have encountered a problem accessing the database'
+                ];
+                response.say(Math.floor(Math.random() * errorArray.length));
+                response.reprompt(repromptArray[random]);
+                response.shouldEndSession(false);
+                response.send();
+            });
+
+        return false;
+    }
+);
+// Company Count
+app.intent('CompanyCountIntent',
+    {
+        'utterances': ['how many companies are there in the building?', 'how many company are there', 'count the number of companies']
+    },
+    function (request, response) {
+        CompanyModel.count({})
+            .then(function (count) {
+                var companyCountArray = [
+                    'I found '+count+' companies in the building',
+                    'there are '+count+' companies in the building',
+                    'there are '+count+' companies'
+                ];
+                var random = Math.floor(Math.random() * companyCountArray.length);
+                response.say(companyCountArray[random]);
+                response.reprompt(repromptArray[random]);
+                response.shouldEndSession(false);
+                response.send();
+            })
+            .catch(function (err) {
+                var errorArray = [
+                    'hmmm, for some reason I can not locate any companies in the database',
+                    'there might be an issue with the database, please try again in a bit when I have the  error rectified',
+                    'I have encountered a problem accessing the database'
+                ];
+                response.say(Math.floor(Math.random() * errorArray.length));
+                response.reprompt(repromptArray[random]);
                 response.shouldEndSession(false);
                 response.send();
             });
@@ -111,7 +148,13 @@ app.intent('ContactIntent',
                 response.send();
             })
             .catch(function (err) {
-                response.say('something bad happened');
+                var errorArray = [
+                    'hmmm, for some reason I can not locate any companies in the database',
+                    'there might be an issue with the database, please try again in a bit when I have the  error rectified',
+                    'I have encountered a problem accessing the database'
+                ];
+                response.say(Math.floor(Math.random() * errorArray.length));
+                response.reprompt(repromptArray[random]);
                 response.shouldEndSession(false);
                 response.send();
             });
@@ -127,10 +170,8 @@ app.intent('EndIntent', {'utterances': ['thank you', 'stop']}, function (request
 
 });
 
+// Error handler for any thrown errors.
 
-/**
- * Error handler for any thrown errors.
- */
 app.error = function (exception, request, response) {
     response.say('Sorry, something bad happened');
 };
