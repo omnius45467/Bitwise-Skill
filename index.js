@@ -51,9 +51,8 @@ app.launch(function (request, response) {
         "Welcome to Bitwise, how can I help?",
         "Hi, welcome to Bitwise. Is there something I can help you find?"
     ];
-    var random = Math.floor(Math.random() * greetingArray.length);
-    response.say(greetingArray[random]);
-    response.reprompt(Math.floor(Math.random() * repromptArray.length));
+    response.say(greetingArray[Math.floor(Math.random() * greetingArray.length)]);
+    response.reprompt(repromptArray[Math.floor(Math.random() * repromptArray.length)]);
     response.shouldEndSession(false);
 });
 
@@ -73,7 +72,7 @@ app.intent('CompanyIntent',
                 ];
                 var random = Math.floor(Math.random() * companyResponseArray.length);
                 response.say(companyResponseArray[random]);
-                response.reprompt(Math.floor(Math.random() * repromptArray.length));
+                response.reprompt(repromptArray[Math.floor(Math.random() * repromptArray.length)]);
                 response.shouldEndSession(false);
                 response.send();
             })
@@ -83,8 +82,8 @@ app.intent('CompanyIntent',
                     'there might be an issue with the database, please try again in a bit when I have the  error rectified',
                     'I have encountered a problem accessing the database'
                 ];
-                response.say(Math.floor(Math.random() * errorArray.length));
-                response.reprompt(Math.floor(Math.random() * repromptArray.length));
+                response.say(errorArray[Math.floor(Math.random() * errorArray.length)]);
+                response.reprompt(repromptArray[Math.floor(Math.random() * repromptArray.length)]);
                 response.shouldEndSession(false);
                 response.send();
             });
@@ -107,9 +106,9 @@ app.intent('CompanyCountIntent',
                     count+' companies total',
                     count+' companies'
                 ];
-                var random = Math.floor(Math.random() * companyCountArray.length);
-                response.say(companyCountArray[random]);
-                response.reprompt(Math.floor(Math.random() * repromptArray.length));
+                // var random = Math.floor(Math.random() * companyCountArray.length);
+                response.say(companyCountArray[Math.floor(Math.random() * companyCountArray.length)]);
+                response.reprompt(repromptArray[Math.floor(Math.random() * repromptArray.length)]);
                 response.shouldEndSession(false);
                 response.send();
             })
@@ -119,8 +118,8 @@ app.intent('CompanyCountIntent',
                     'there might be an issue with the database, please try again in a bit when I have the  error rectified',
                     'I have encountered a problem accessing the database'
                 ];
-                response.say(Math.floor(Math.random() * errorArray.length));
-                response.reprompt(Math.floor(Math.random() * repromptArray.length));
+                response.say(errorArray[Math.floor(Math.random() * errorArray.length)]);
+                response.reprompt(repromptArray[Math.floor(Math.random() * repromptArray.length)]);
                 response.shouldEndSession(false);
                 response.send();
             });
@@ -145,7 +144,7 @@ app.intent('ContactIntent',
                 ];
                 var random = Math.floor(Math.random() * contactResponseArray.length);
                 response.say(contactResponseArray[random]);
-                response.reprompt(Math.floor(Math.random() * repromptArray.length));
+                response.reprompt(repromptArray[Math.floor(Math.random() * repromptArray.length)]);
                 response.shouldEndSession(false);
                 response.send();
             })
@@ -155,8 +154,8 @@ app.intent('ContactIntent',
                     'there might be an issue with the database, please try again in a bit when I have the  error rectified',
                     'I have encountered a problem accessing the database'
                 ];
-                response.say(Math.floor(Math.random() * errorArray.length));
-                response.reprompt(Math.floor(Math.random() * repromptArray.length));
+                response.say(errorArray[Math.floor(Math.random() * errorArray.length)]);
+                response.reprompt(repromptArray[Math.floor(Math.random() * repromptArray.length)]);
                 response.shouldEndSession(false);
                 response.send();
             });
