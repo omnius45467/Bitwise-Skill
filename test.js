@@ -11,6 +11,10 @@ mongoose.Promise = Promise;
 mongoose.connect(process.env.MLAB);
 
 var Company = new Schema({
+    utteranceName:{
+        type: String,
+        required:true
+    },
     name: {
         type: String,
         required: true

@@ -1,0 +1,5 @@
+{
+  "Amazon" : {
+    "lambda-arn" : <ARN_FROM_AWS_LAMBDA_FUNCTION>
+  }
+}
