@@ -14,29 +14,23 @@ mongoose.connect(process.env.MLAB);
 mongoose.Promise = Promise;
 
 var Company = new Schema({
+    utterance: {
+        type: String
+    },
     name: {
-        type: String,
-        required: true
+        type: String
     },
     contact: {
-        type: String,
-        required: true
+        type: String
     },
     phone: {
-        type: Number,
-        required: true
+        type: Number
     },
     suite: {
-        type: Number,
-        required: true
+        type: Number
     },
     floor: {
-        type: Number,
-        required: true
-    // },
-    // story: {
-    //     type: String,
-    //     required:true
+        type: Number
     }
 });
 
@@ -55,14 +49,36 @@ var CompanyModel = mongoose.model('companies', Company);
 
 // LaunchRequest
 app.launch(function (request, response) {
+
     var greetingArray = [
         "Hi there! Welcome to Bitwise! What can I do for you?",
         "Welcome to Bitwise, how can I help?",
         "Hi, welcome to Bitwise. Is there something I can help you find?"
     ];
+    response.session('number',42);
     response.say(greetingArray[Math.floor(Math.random() * greetingArray.length)]);
     response.reprompt(repromptArray[Math.floor(Math.random() * repromptArray.length)]);
     response.shouldEndSession(false);
+
+});
+
+app.intent('AddCompanyIntent', {
+    'slots': {'company': 'LIST_OF_COMPANIES'},
+    'utterances': ['add the company {company}']
+}, function(request, response){
+    console.log(request);
+    response.say('adding '+request.slot('company'));
+    var newCompany = new CompanyModel();
+    newCompany.utterance = request.slot('company');
+    newCompany.name = 'test';
+    newCompany.contact = 'test name';
+    newCompany.phone = 42;
+    newCompany.suite = 300;
+    newCompany.floor = 4;
+    newCompany.save();
+    response.send();
+    response.shouldEndSession(false);
+
 });
 
 // Retrieve Company Information
@@ -72,6 +88,8 @@ app.intent('CompanyIntent',
         'utterances': ['find the company {company}']
     },
     function (request, response) {
+        console.log(request, request.session);
+        response.session('cats',12000000);
         CompanyModel.findOne({utterance: request.slot('company')})
             .then(function (company) {
                 var companyResponseArray = [
@@ -106,6 +124,7 @@ app.intent('CompanyCountIntent',
         'utterances': ['how many companies are there in the building?', 'how many company are there', 'count the number of companies']
     },
     function (request, response) {
+        console.log(request);
         CompanyModel.count({})
             .then(function (count) {
                 var companyCountArray = [
@@ -144,6 +163,7 @@ app.intent('ContactIntent',
         'utterances': ['who can I talk to from {company}', 'is there someone I can talk to from {company}', 'who can I see from {company}']
     },
     function (request, response) {
+        console.log(request);
         CompanyModel.findOne({utterance: request.slot('company')})
             .then(function (company) {
                 var contactResponseArray = [
@@ -173,6 +193,7 @@ app.intent('ContactIntent',
     }
 );
 app.intent('EndIntent', {'utterances': ['thank you', 'stop']}, function (request, response) {
+    console.log(request);
     response.say(startrek());
     response.shouldEndSession(true);
     response.send();
